@@ -1,0 +1,7 @@
+Tool for ICMP pinging more than one IP address at a time.
+
+TODO
+-  Use ZeroMQ to deliver results to any requesting clients.
+-  Use ZeroMQ to allow more than one masspinger instance to cooperate
+   and distribute RTT/visibility results.
+   
