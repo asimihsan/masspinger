@@ -101,8 +101,8 @@ int main(int argc, char* argv[])
         po::options_description desc("Allowed options");
         desc.add_options()
             ("help", "produce help message")
-            ("host,H", po::value< std::vector<std::string> >(), "host"),
-            ("verbose","V", "verbose debug output");  
+            ("host,H", po::value< std::vector<std::string> >(), "host")
+            ("verbose,V", "verbose debug output");  
 
         po::positional_options_description positional_desc;
         positional_desc.add("host", -1);
