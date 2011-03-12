@@ -11,6 +11,7 @@
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/exception/all.hpp> 
 namespace posix_time = boost::posix_time;
 
 #include <log4cxx/logger.h>
@@ -21,17 +22,6 @@ namespace posix_time = boost::posix_time;
 #include "icmp_header.hpp"
 #include "ipv4_header.hpp"
 #include "Host.hpp"
-
-/*
-#include <istream>
-#include <iostream>
-#include <ostream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include <set>
-#include <cstdlib>
-*/
 
 class Pinger
 {
@@ -52,6 +42,10 @@ private:
     void start_send(boost::shared_ptr<Host> host);
 
     unsigned short get_identifier();
+
+    void set_host_responsive(boost::shared_ptr<Host> host);
+
+    void set_host_unresponsive(boost::shared_ptr<Host> host, const boost::system::error_code& error);
   
 }; // class Pinger
 

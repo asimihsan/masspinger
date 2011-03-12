@@ -30,15 +30,21 @@ public:
 
     inline const icmp::endpoint& get_destination() { return Host::destination; }
 
-    inline weak_ptr_deadline_timer get_deadline_timer() { return weak_ptr_deadline_timer(Host::timer); }
+    inline weak_ptr_deadline_timer get_send_timer() { return weak_ptr_deadline_timer(Host::send_timer); }
+    inline weak_ptr_deadline_timer get_unresponsive_timer() { return weak_ptr_deadline_timer(Host::unresponsive_timer); }
+
+    void set_responsive();
+    void set_unresponsive(const boost::system::error_code& error);
 
 private:
+    log4cxx::LoggerPtr logger;
     std::string host_ip_address;
-    shared_ptr_deadline_timer timer;    
+    shared_ptr_deadline_timer send_timer;  
+    shared_ptr_deadline_timer unresponsive_timer;    
     unsigned short sequence_number;
-    boost::posix_time::ptime time_sent;    
-    std::size_t num_replies;    
+    boost::posix_time::ptime time_sent;        
     icmp::endpoint destination;
+    bool is_responsive;
 }; // class Host
 
 #endif // HOST_HPP

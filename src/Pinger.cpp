@@ -13,10 +13,17 @@ Pinger::Pinger(boost::asio::io_service& io_service, std::vector< std::string >& 
     BOOST_FOREACH( std::string host, hosts )
     {
         boost::shared_ptr<Host> h1 = boost::shared_ptr<Host>(new Host (io_service, host, logger));
-        hosts_lookup[h1->get_host_ip_address()] = h1;
         LOG4CXX_DEBUG(logger, "Pinger host: " << h1->get_host_ip_address());
+        hosts_lookup[h1->get_host_ip_address()] = h1;        
+
+        shared_ptr_deadline_timer unresponsive_timer = h1->get_unresponsive_timer().lock();
+        LOG4CXX_ASSERT(logger, unresponsive_timer, "Could not get host's unresponsive_timer.");
+        unresponsive_timer->expires_from_now(posix_time::seconds(5));
+        unresponsive_timer->async_wait(boost::bind(&Pinger::set_host_unresponsive, this, h1, boost::asio::placeholders::error));
+
         start_send(h1);            
     } // BOOST_FOREACH( std::string host, hosts )
+
     start_receive();
 } // Pinger::Pinger(boost::asio::io_service& io_service, std::vector< std::string >& hosts, log4cxx::LoggerPtr logger)
 
@@ -24,6 +31,16 @@ Pinger::~Pinger()
 {
     socket.close();
 } // Pinger::~Pinger()
+
+void Pinger::set_host_responsive(boost::shared_ptr<Host> host)
+{
+    host->set_responsive();
+} // Pinger::set_host_responsive(boost::shared_ptr<Host> host)
+
+void Pinger::set_host_unresponsive(boost::shared_ptr<Host> host, const boost::system::error_code& error)
+{
+    host->set_unresponsive(error);
+} // Pinger::set_host_unresponsive(boost::shared_ptr<Host> host)
 
 void Pinger::start_receive()
 {
@@ -61,12 +78,19 @@ void Pinger::handle_receive(std::size_t length)
            && icmp_hdr.identifier() == get_identifier())
            //&& icmp_hdr.sequence_number() == sequence_number_)
     {
-        //std::cout << "Handling source address: " << ipv4_hdr.source_address() << std::endl;
-        //std::cout << "ICMP destination: " << destination_.address() << std::endl;    
-        //boost::shared_ptr<Host> matching_host = hosts_lookup.find
+        // -------------------------------------------------------------------
+        // Reset the host's unresponsive timer, and mark it responsive.
+        // -------------------------------------------------------------------
+        boost::shared_ptr<Host> matching_host = hosts_lookup.find(ost_ipv4_address.str())->second;
+        matching_host->set_responsive();
+        shared_ptr_deadline_timer unresponsive_timer = matching_host->get_unresponsive_timer().lock();
+        LOG4CXX_ASSERT(logger, unresponsive_timer, "Could not get host's unresponsive_timer.");
+        unresponsive_timer->cancel();
+        unresponsive_timer->expires_from_now(posix_time::seconds(5));
+        unresponsive_timer->async_wait(boost::bind(&Pinger::set_host_unresponsive, this, matching_host, boost::asio::placeholders::error));
+        // -------------------------------------------------------------------
 
-        // Print out some information about the reply packet.
-        posix_time::ptime now = posix_time::microsec_clock::universal_time();
+        // Log some information about the reply packet.        
         LOG4CXX_DEBUG(logger, length - ipv4_hdr.header_length()
                               << " bytes from " << ipv4_hdr.source_address()
                               << ": icmp_seq=" << icmp_hdr.sequence_number()
@@ -76,7 +100,7 @@ void Pinger::handle_receive(std::size_t length)
 } // void Pinger::handle_receive(std::size_t length)    
 
 void Pinger::start_send(boost::shared_ptr<Host> host)
-{
+{    
     LOG4CXX_DEBUG(logger, "start_send.  host: " << host->get_host_ip_address());    
     std::string body("\"Hello!\" from Asio ping.");
 
@@ -94,20 +118,40 @@ void Pinger::start_send(boost::shared_ptr<Host> host)
     std::ostream os(&request_buffer);
     os << echo_request << body;
 
-    // Send the request.
-    host->set_time_sent(posix_time::microsec_clock::universal_time());
-    socket.send_to(request_buffer.data(), host->get_destination());
-
-    if (shared_ptr_deadline_timer timer = host->get_deadline_timer().lock())
+    // -----------------------------------------------------------------------
+    // -  Send the next packet after the send interval period passes.
+    // -----------------------------------------------------------------------
+    shared_ptr_deadline_timer send_timer = host->get_send_timer().lock();
+    shared_ptr_deadline_timer unresponsive_timer = host->get_unresponsive_timer().lock();
+    if (send_timer && unresponsive_timer)
     {
-        timer->expires_at(host->get_time_sent() + posix_time::seconds(1));
-        timer->async_wait(boost::bind(&Pinger::start_send, this, host));
+        send_timer->expires_from_now(posix_time::seconds(1));
+        send_timer->async_wait(boost::bind(&Pinger::start_send, this, host));
     } // if (shared_ptr_deadline_timer timer = host->get_deadline_timer().lock())
     else
     {
-        LOG4CXX_ERROR(logger, "Cannot get deadline timer for host: " << host->get_host_ip_address());
+        LOG4CXX_ERROR(logger, "Cannot get send and/or unresponsive timer for host: " << host->get_host_ip_address());
     }
     
+    // Send the request.
+    host->set_time_sent(posix_time::microsec_clock::universal_time());
+    try
+    {
+        socket.send_to(request_buffer.data(), host->get_destination());
+    } // try
+    catch(boost::system::system_error& e)
+    {        
+        if (e.code() == boost::asio::error::network_unreachable)
+        {
+            LOG4CXX_WARN(logger, "Network is unreachable.");
+        } // if (e.code == boost::asio::error::network_unreachable)
+        else
+        {
+            LOG4CXX_WARN(logger, "Unhandled exception during socket send.");
+            throw;
+        }
+    } // catch(boost::system::system_error& e)
+
 } // void Pinger::start_send(boost::shared_ptr<Host> host)
   
 unsigned short Pinger::get_identifier()
