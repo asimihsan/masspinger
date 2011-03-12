@@ -1,12 +1,18 @@
-//
-// ipv4_header.hpp
-// ~~~~~~~~~~~~~~~
+// ---------------------------------------------------------------------------
+// Copyright (c) 2011 Asim Ihsan (asim dot ihsan at gmail dot com)
+// Distributed under the MIT/X11 software license, see the accompanying
+// file license.txt or http://www.opensource.org/licenses/mit-license.php.
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Based on the ICMP example from the Boost ASIO library, with the following
+// copyright header:
 //
 // Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
+// ---------------------------------------------------------------------------
 
 #ifndef IPV4_HEADER_HPP
 #define IPV4_HEADER_HPP

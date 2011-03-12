@@ -1,7 +1,14 @@
 Tool for ICMP pinging more than one IP address at a time.
 
 TODO
+-  Track when hosts become unresponsive, depending on a certain
+   timeout that must be larger than ping interval.
+-  Track when a certain proportion of hosts becomes unresponsive,
+   i.e. network outage.
 -  Use ZeroMQ to deliver results to any requesting clients.
+-  Create CMake build, test it works on MSVC 2008 (9) and GCC on
+   Ubuntu.
+
 -  Use ZeroMQ to allow more than one masspinger instance to cooperate
    and distribute RTT/visibility results.
    

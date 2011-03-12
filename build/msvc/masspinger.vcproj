@@ -39,11 +39,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="i:\libs\boost_1_45_0\;&quot;i:\libs\zeromq-2.1.2\include&quot;"
-				PreprocessorDefinitions="_WIN32_WINNT=0x0501;BOOST_WINDOWS"
+				AdditionalIncludeDirectories="i:\libs\boost_1_45_0\;&quot;i:\libs\zeromq-2.1.2\include&quot;;&quot;I:\libs\apache-log4cxx-0.10.0\src\main\include&quot;"
+				PreprocessorDefinitions="_WIN32_WINNT=0x0501;BOOST_WINDOWS;LOG4CXX_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
@@ -60,8 +60,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="log4cxx.lib aprutil-1.lib apr-1.lib xml.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="I:\libs\boost_1_45_0\lib\win32"
+				AdditionalLibraryDirectories="I:\libs\boost_1_45_0\lib\win32;&quot;I:\libs\apache-log4cxx-0.10.0\projects\Debug&quot;;&quot;I:\libs\apr-util\LibD&quot;;I:\libs\apr\LibD;&quot;I:\libs\apr-util\xml\expat\lib\LibD&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -111,12 +112,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="i:\libs\boost_1_45_0\;&quot;i:\libs\zeromq-2.1.2\include&quot;"
-				PreprocessorDefinitions="_WIN32_WINNT=0x0501;BOOST_WINDOWS"
-				RuntimeLibrary="2"
+				AdditionalIncludeDirectories="i:\libs\boost_1_45_0\;&quot;i:\libs\zeromq-2.1.2\include&quot;;&quot;I:\libs\apache-log4cxx-0.10.0\src\main\include&quot;"
+				PreprocessorDefinitions="_WIN32_WINNT=0x0501;BOOST_WINDOWS;LOG4CXX_STATIC"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -130,8 +131,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="log4cxx.lib apr-1.lib aprutil-1.lib xml.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="I:\libs\boost_1_45_0\lib\win32"
+				AdditionalLibraryDirectories="&quot;I:\libs\apache-log4cxx-0.10.0\projects\Release&quot;;I:\libs\boost_1_45_0\lib\win32;I:\libs\apr\LibR;&quot;I:\libs\apr-util\LibR&quot;;&quot;I:\libs\apr-util\xml\expat\lib\LibD&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -170,11 +172,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\src\Host.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\icmp_header.hpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\ipv4_header.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Pinger.hpp"
 				>
 			</File>
 		</Filter>
@@ -190,7 +200,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\Host.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\ping.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Pinger.cpp"
 				>
 			</File>
 		</Filter>
