@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+
+  <title>asimihsan/masspinger @ GitHub</title>
+
+  <style type="text/css">
+    body {
+      margin-top: 1.0em;
+      background-color: #3a3e92;
+      font-family: Helvetica, Arial, FreeSans, san-serif;
+      color: #ffffff;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+    h1 { font-size: 3.8em; color: #c5c16d; margin-bottom: 3px; }
+    h1 .small { font-size: 0.4em; }
+    h1 a { text-decoration: none }
+    h2 { font-size: 1.5em; color: #c5c16d; }
+    h3 { text-align: center; color: #c5c16d; }
+    a { color: #c5c16d; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .download { float: right; }
+    pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+  </style>
+</head>
+
+<body>
+  <a href="http://github.com/asimihsan/masspinger"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+  <div id="container">
+
+    <div class="download">
+      <a href="http://github.com/asimihsan/masspinger/zipball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/asimihsan/masspinger/tarball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+    </div>
+
+    <h1><a href="http://github.com/asimihsan/masspinger">masspinger</a>
+      <span class="small">by <a href="http://github.com/asimihsan">asimihsan</a></span></h1>
+
+    <div class="description">
+      ICMP ping many hosts simultaneously.
+    </div>
+
+    <h2>Dependencies</h2>
+<p>-  Boost, tested with 1.46.0 (http://www.boost.org).
+-  ZeroMQ (http://www.zeromq.org)
+-  log4cxx, which itself requires apr, apr-util, and xml (http://logging.apache.org/log4cxx/index.html).
+</p>
+<h2>Install</h2>
+<p>Windows:
+-  Requires Microsoft Visual Studio, tested on MSVC 2010 (version 9).
+-  Download latest version of Boost from http://www.boost.org/.  Extract to e.g. c:\libs\boost\
+-  Follow the "Getting Started" instructions, e.g. http://www.boost.org/doc/libs/1_46_1/more/getting_started/windows.html, to build the Boost binaries.  This is essentially "bootstrap" and ".\bjam" from a MSVC prompt.
+-  The Boost binaries should now be in e.g. c:\libs\boost\stage\lib\
+-  <TODO download and compile ZeroMQ, follow site instructions>
+-  <TODO download and install log4cxx.  This is quite complex, but boils down to http://www.elpauer.org/?p=250 then http://tinyurl.com/4ufyauz.  This is because the binary is statically linked>.
+-  <TODO Clone git repo, edit MSVC solution linker directories and include directories to your Boost/ZeroMQ/log4cxx/apr/apr-util/xml locations>
+
+Ubuntu:
+
+-  <TODO Download/install latest version of Boost from source, build it, then put the library path into /etc/ld.so.conf/ and run ldconfig>
+-  sudo apt-get install liblog4cxx10 liblog4cxx10-dev, because I couldn't successfully build it from source.
+-  <git clone, cd to the src directory, then run:>
+
+g++ -I /usr/local/lib/boost_1_46_0/ -L /usr/local/lib/boost_1_46_0/stage/lib -lboost_system -lboost_program_options -Wall -ansi -pedantic ping.cpp Host.cpp Pinger.cpp -o ping
+
+(still need to set up the build system)
+
+After install run masspinger to see usage instructions.  Works like e.g. "masspinger host1 host2 host3 ..."</p>
+<h2>License</h2>
+<p>MIT license</p>
+<h2>Authors</h2>
+<p>Asim Ihsan<br/><br/>      </p>
+<h2>Contact</h2>
+<p> (asim dot ihsan at gmail dot com)<br/>      </p>
+
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="http://github.com/asimihsan/masspinger/zipball/master">zip</a> or
+      <a href="http://github.com/asimihsan/masspinger/tarball/master">tar</a> formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/asimihsan/masspinger</pre>
+    </p>
+
+    <div class="footer">
+      get the source code on GitHub : <a href="http://github.com/asimihsan/masspinger">asimihsan/masspinger</a>
+    </div>
+
+  </div>
+
+  
+</body>
+</html>
