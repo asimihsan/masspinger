@@ -8,20 +8,20 @@
   <style type="text/css">
     body {
       margin-top: 1.0em;
-      background-color: #3a3e92;
+      background-color: #25567b;
       font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #ffffff;
+      color: #cccccc;
     }
     #container {
       margin: 0 auto;
       width: 700px;
     }
-    h1 { font-size: 3.8em; color: #c5c16d; margin-bottom: 3px; }
+    h1 { font-size: 3.8em; color: #ffffff; margin-bottom: 3px; }
     h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #c5c16d; }
-    h3 { text-align: center; color: #c5c16d; }
-    a { color: #c5c16d; }
+    h1 a { text-decoration: none; color: #ffffff;}
+    h2 { font-size: 1.5em; color: #ffffff; }
+    h3 { text-align: center; color: #ffffff; }
+    a { color: #60affe; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
     .download { float: right; }
     pre { background: #000; color: #fff; padding: 15px;}
@@ -50,37 +50,44 @@
     </div>
 
     <h2>Dependencies</h2>
-<p>-  Boost, tested with 1.46.0 (http://www.boost.org).
--  ZeroMQ (http://www.zeromq.org)
--  log4cxx, which itself requires apr, apr-util, and xml (http://logging.apache.org/log4cxx/index.html).
-</p>
+    <p><ul>
+        <li><a href="http://www.boost.org">Boost</a>, tested with 1.46.0.</li>
+        <li><a href="http://www.zeromq.org">ZeroMQ</a></li>
+        <li><a href="http://logging.apache.org/log4cxx/index.html">log4cxx</a></li>
+    </ul></p>
+    
 <h2>Install</h2>
-<p>Windows:
--  Requires Microsoft Visual Studio, tested on MSVC 2010 (version 9).
--  Download latest version of Boost from http://www.boost.org/.  Extract to e.g. c:\libs\boost\
--  Follow the "Getting Started" instructions, e.g. http://www.boost.org/doc/libs/1_46_1/more/getting_started/windows.html, to build the Boost binaries.  This is essentially "bootstrap" and ".\bjam" from a MSVC prompt.
--  The Boost binaries should now be in e.g. c:\libs\boost\stage\lib\
--  <TODO download and compile ZeroMQ, follow site instructions>
--  <TODO download and install log4cxx.  This is quite complex, but boils down to http://www.elpauer.org/?p=250 then http://tinyurl.com/4ufyauz.  This is because the binary is statically linked>.
--  <TODO Clone git repo, edit MSVC solution linker directories and include directories to your Boost/ZeroMQ/log4cxx/apr/apr-util/xml locations>
+<h3>Windows</h3>
+<ul>
+<li>Requires Microsoft Visual Studio, tested on MSVC 2010 (version 9).</li>
+<li>Download latest version of Boost from http://www.boost.org/.  Extract to e.g. c:\libs\boost\</li>
+<li>Follow the <a href="http://www.boost.org/doc/libs/1_46_1/more/getting_started/windows.html">Boost "Getting Started" instructions</a>, to build the Boost binaries.  This is essentially "bootstrap" and ".\bjam" from a MSVC prompt.</li>
+<li>The Boost binaries should now be in e.g. c:\libs\boost\stage\lib\</li>
+<li>&lt;TODO download and compile ZeroMQ, follow site instructions&gt;</li>
+<li>&lt;TODO download and install log4cxx.  This is quite complex, but boils down to <a href="http://www.elpauer.org/?p=250">http://www.elpauer.org/?p=250</a> then <a href="http://tinyurl.com/4ufyauz">http://tinyurl.com/4ufyauz</a>.  This is because the binary is statically linked&gt;.</li>
+<li>&lt;TODO Clone git repo, edit MSVC solution linker directories and include directories to your Boost/ZeroMQ/log4cxx/apr/apr-util/xml locations&gt;</li>
+</ul>
 
-Ubuntu:
+<h3>Ubuntu</h3>
+<ul>
+<p>
+<li>&lt;TODO Download/install latest version of Boost from source, build it, then put the library path into /etc/ld.so.conf/ and run ldconfig&gt;</li>
+<li>sudo apt-get install liblog4cxx10 liblog4cxx10-dev, because I couldn't successfully build it from source.</li>
+<li>&lt;git clone, cd to the src directory, then run:<br/ ></li>
+<pre>g++ -I /usr/local/lib/boost_1_46_0/<br /> -L /usr/local/lib/boost_1_46_0/stage/lib<br /> -lboost_system -lboost_program_options<br /> -Wall -ansi -pedantic<br /> ping.cpp Host.cpp Pinger.cpp -o ping</pre>
+</p>
+<p>
+After install run masspinger to see usage instructions.  Works like e.g. "masspinger host1 host2 host3 ...".  Add "-V" or "--verbose" for more output, rather than just responsive/unresponsive text.</p>
 
--  <TODO Download/install latest version of Boost from source, build it, then put the library path into /etc/ld.so.conf/ and run ldconfig>
--  sudo apt-get install liblog4cxx10 liblog4cxx10-dev, because I couldn't successfully build it from source.
--  <git clone, cd to the src directory, then run:>
-
-g++ -I /usr/local/lib/boost_1_46_0/ -L /usr/local/lib/boost_1_46_0/stage/lib -lboost_system -lboost_program_options -Wall -ansi -pedantic ping.cpp Host.cpp Pinger.cpp -o ping
-
-(still need to set up the build system)
-
-After install run masspinger to see usage instructions.  Works like e.g. "masspinger host1 host2 host3 ..."</p>
 <h2>License</h2>
 <p>MIT license</p>
 <h2>Authors</h2>
-<p>Asim Ihsan<br/><br/>      </p>
+<p>Asim Ihsan
+<br/>
+<br/>      </p>
 <h2>Contact</h2>
-<p> (asim dot ihsan at gmail dot com)<br/>      </p>
+<p> (asim dot ihsan at gmail dot com)
+<br/>      </p>
 
 
     <h2>Download</h2>
