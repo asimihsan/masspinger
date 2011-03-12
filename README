@@ -1,8 +1,9 @@
 Tool for ICMP pinging more than one IP address at a time.
 
 TODO
--  Track when hosts become unresponsive, depending on a certain
-   timeout that must be larger than ping interval.
+-  Handle exceptions during startup, crash immediately.
+-  Handle exceptions during run that imply loss of network adapter,
+   and keep running and send pings at the same rate.
 -  Track when a certain proportion of hosts becomes unresponsive,
    i.e. network outage.
 -  Use ZeroMQ to deliver results to any requesting clients.
