@@ -19,6 +19,7 @@
 #include <boost/program_options.hpp>
 #include <boost/foreach.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/exception/all.hpp> 
 namespace po = boost::program_options;
 
 #include <stdlib.h>
@@ -72,6 +73,7 @@ static void configure_logger(bool err) {
     void stop(int s)
     {
         std::cout << "CTRL-C" << std::endl;
+        s = s;
         exit(0);
     }
 #else
@@ -99,7 +101,8 @@ int main(int argc, char* argv[])
         po::options_description desc("Allowed options");
         desc.add_options()
             ("help", "produce help message")
-            ("host,H", po::value< std::vector<std::string> >(), "host");  
+            ("host,H", po::value< std::vector<std::string> >(), "host"),
+            ("verbose","V", "verbose debug output");  
 
         po::positional_options_description positional_desc;
         positional_desc.add("host", -1);
@@ -110,9 +113,16 @@ int main(int argc, char* argv[])
         po::notify(vm);
 
         if (vm.count("help")) {
-            std::cout << "Usage: ping [hosts]" << std::endl;
+            std::cout << "Usage: ping [host1] [host2] ..." << std::endl;
             std::cout << desc;
             return 0;
+        }
+
+        logger->setLevel(log4cxx::Level::getInfo());
+        if (vm.count("verbose"))
+        {
+            std::cout << "Verbose debug mode enabled." << std::endl;
+            logger->setLevel(log4cxx::Level::getTrace());
         }
 
         if (!vm.count("host")) {
@@ -156,8 +166,8 @@ int main(int argc, char* argv[])
         boost::shared_ptr<Pinger> ping_receiver(new Pinger(io_service, hosts, logger));
         io_service.run();
     }
-    catch (std::exception& e)
+    catch (boost::exception& e)
     {
-        std::cerr << "Exception: " << e.what() << std::endl;
+        LOG4CXX_FATAL(logger, "Main exception: " << boost::diagnostic_information(e));        
     }
 }
