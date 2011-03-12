@@ -74,7 +74,7 @@
 <li>&lt;TODO Download/install latest version of Boost from source, build it, then put the library path into /etc/ld.so.conf/ and run ldconfig&gt;</li>
 <li>sudo apt-get install liblog4cxx10 liblog4cxx10-dev, because I couldn't successfully build it from source.</li>
 <li>&lt;git clone, cd to the src directory, then run:<br/ ></li>
-<pre>g++ -I /usr/local/lib/boost_1_46_0/<br /> -L /usr/local/lib/boost_1_46_0/stage/lib<br /> -lboost_system -lboost_program_options<br /> -Wall -ansi -pedantic<br /> ping.cpp Host.cpp Pinger.cpp -o ping</pre>
+<pre>g++ -I /usr/local/lib/boost_1_46_0/<br /> -I /usr/include/log4cxx/<br /> -L /usr/local/lib/boost_1_46_0/stage/lib<br /> -lboost_system -lboost_program_options -llog4cxx<br /> -Wall -ansi -pedantic<br /> ping.cpp Host.cpp Pinger.cpp -o ping</pre>
 </p>
 <p>
 After install run masspinger to see usage instructions.  Works like e.g. "masspinger host1 host2 host3 ...".  Add "-V" or "--verbose" for more output, rather than just responsive/unresponsive text.</p>
