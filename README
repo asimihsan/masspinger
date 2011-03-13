@@ -1,15 +1,23 @@
 Tool for ICMP pinging more than one IP address at a time.
 
 TODO
+-  Use ZeroMQ to deliver results to any requesting clients.  Make
+   a mock Python client that just plain polling and logs the results.
 -  Handle exceptions during startup, crash immediately.
 -  Handle exceptions during run that imply loss of network adapter,
-   and keep running and send pings at the same rate.
+   and keep running and send pings at the same rate.  This is almost
+   done but we print out "Network is unreachable" too often.
+-  Keep a circular buffer of send/receive times with sequence number.
+   This should be enough to estimate loss rate and avg/stdev RTT.   
 -  Track when a certain proportion of hosts becomes unresponsive,
-   i.e. network outage.
--  Use ZeroMQ to deliver results to any requesting clients.
+   i.e. network outage.  Log/note it.
+-  Make an Erlang node that tracks historical contactability in
+   an Mnesia database.
+-  Register a SIP subscriber as a functional, periodic test.  PJSIP
+   might work.
+-  Register two SIP subscribers, make a call.  PJSIP again.
 -  Create CMake build, test it works on MSVC 2008 (9) and GCC on
    Ubuntu.
-
 -  Use ZeroMQ to allow more than one masspinger instance to cooperate
    and distribute RTT/visibility results.
    
