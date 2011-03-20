@@ -130,6 +130,7 @@ masspinger.exe 192.168.0.1 192.168.0.100 -b tcp://*:5556 -V
             <p><ul>            
                 <li>&lt;TODO Download/install latest version of Boost from source, build it, then put the library path into /etc/ld.so.conf/ and run ldconfig&gt;</li>
                 <li>sudo apt-get install liblog4cxx10 liblog4cxx10-dev, because I couldn't successfully build it from source.</li>
+                <li><a href="http://johanharjono.com/archives/633">Install the latest version of zeromq</a>.</li>
                 <li>&lt;git clone, cd to the src directory, then run:<br/ ><br />
                 <pre>g++ -O3 -I /usr/local/lib/boost_1_46_0/ -L /usr/local/lib/boost_1_46_0/stage/lib -lboost_system -lboost_program_options -llog4cxx -lzmq -Wall -ansi -pedantic `ls *.cpp | xargs` -o masspinger</pre>
                 </li>
