@@ -6,11 +6,31 @@
 
 #include "Pinger.hpp"
 
-Pinger::Pinger(boost::asio::io_service& io_service, std::vector< std::string >& hosts, log4cxx::LoggerPtr logger)
+Pinger::Pinger(boost::asio::io_service& io_service,
+               std::vector< std::string >& hosts,
+               std::vector< std::string >& zeromq_binds,
+               log4cxx::LoggerPtr logger)
         : socket(io_service, icmp::v4()),
-          logger(logger)
+          logger(logger),
+          is_network_unreachable(false)
 {
-    BOOST_FOREACH( std::string host, hosts )
+
+    // -----------------------------------------------------------------------
+    //  Set up ZeroMQ publishing on all bindings.
+    // -----------------------------------------------------------------------
+    context_ptr = zmq_context_ptr_t(new zmq::context_t(1));
+    publisher_ptr = zmq_socket_ptr_t(new zmq::socket_t(*context_ptr, ZMQ_PUB));
+    BOOST_FOREACH( std::string& zeromq_bind, zeromq_binds )
+    {
+        LOG4CXX_INFO(logger, "Publishing ICMP PING results to ZeroMQ address: " << zeromq_bind.c_str());
+        zmq_bind(*publisher_ptr, zeromq_bind.c_str());
+    } // BOOST_FOREACH( std::string& zeromq_bind, zeromq_binds )
+    // -----------------------------------------------------------------------
+
+    // -----------------------------------------------------------------------
+    //  Start an asynchronous, infinite send for each host we're monitoring.
+    // -----------------------------------------------------------------------
+    BOOST_FOREACH( std::string& host, hosts )
     {
         boost::shared_ptr<Host> h1 = boost::shared_ptr<Host>(new Host (io_service, host, logger));
         LOG4CXX_DEBUG(logger, "Pinger host: " << h1->get_host_ip_address());
@@ -23,6 +43,7 @@ Pinger::Pinger(boost::asio::io_service& io_service, std::vector< std::string >& 
 
         start_send(h1);            
     } // BOOST_FOREACH( std::string host, hosts )
+    // -----------------------------------------------------------------------
 
     start_receive();
 } // Pinger::Pinger(boost::asio::io_service& io_service, std::vector< std::string >& hosts, log4cxx::LoggerPtr logger)
@@ -65,14 +86,11 @@ void Pinger::handle_receive(std::size_t length)
     is >> ipv4_hdr >> icmp_hdr;
 
     // We can receive all ICMP packets received by the host, so we need to
-    // filter out only the echo replies that match the our identifier and
-    // expected sequence number.
+    // filter out only the echo replies that match the our identifier.
     std::stringstream ost_ipv4_address;    
     ost_ipv4_address << ipv4_hdr.source_address();            
-
     LOG4CXX_DEBUG(logger, "ICMP ping from " << ipv4_hdr.source_address()
                           << ", icmp_seq=" << icmp_hdr.sequence_number());
-
     if (is && icmp_hdr.type() == icmp_header::echo_reply
            && hosts_lookup.find(ost_ipv4_address.str()) != hosts_lookup.end()
            && icmp_hdr.identifier() == get_identifier())
@@ -94,7 +112,22 @@ void Pinger::handle_receive(std::size_t length)
         LOG4CXX_DEBUG(logger, length - ipv4_hdr.header_length()
                               << " bytes from " << ipv4_hdr.source_address()
                               << ": icmp_seq=" << icmp_hdr.sequence_number()
-                              << ", ttl=" << ipv4_hdr.time_to_live());
+                              << ", ttl=" << ipv4_hdr.time_to_live());                  
+         
+         // ------------------------------------------------------------------
+         // Publish a ZeroMQ message corresponding to receiving this event.
+         //
+         // Reference:
+         // http://stackoverflow.com/questions/1374468/c-stringstream-string-and-char-conversion-confusion
+         // ------------------------------------------------------------------
+         std::stringstream event_stream;
+         event_stream << "ICMP PING " << ipv4_hdr.source_address();
+         const std::string& event_string = event_stream.str();
+         const char* event_cstr = event_string.c_str();
+         zmq::message_t message(strlen(event_cstr));
+         strncpy((char *)message.data(), event_cstr, strlen(event_cstr));
+         publisher_ptr->send(message);         
+         // ------------------------------------------------------------------
     }
     start_receive();
 } // void Pinger::handle_receive(std::size_t length)    
@@ -138,12 +171,17 @@ void Pinger::start_send(boost::shared_ptr<Host> host)
     try
     {
         socket.send_to(request_buffer.data(), host->get_destination());
+        is_network_unreachable = false;
     } // try
     catch(boost::system::system_error& e)
     {        
         if (e.code() == boost::asio::error::network_unreachable)
         {
-            LOG4CXX_WARN(logger, "Network is unreachable.");
+            if (!is_network_unreachable)
+            {
+                LOG4CXX_WARN(logger, "Network is unreachable.");
+                is_network_unreachable = true;
+            } // if (!is_network_unreachable)
         } // if (e.code == boost::asio::error::network_unreachable)
         else
         {

@@ -16,6 +16,12 @@ namespace posix_time = boost::posix_time;
 
 #include <log4cxx/logger.h>
 
+#include <zmq.hpp>    
+#include <cstdio>
+#if BOOST_WINDOWS
+    #define snprintf sprintf_s 
+#endif 
+
 #include <string>
 #include <set>
 
@@ -23,17 +29,27 @@ namespace posix_time = boost::posix_time;
 #include "ipv4_header.hpp"
 #include "Host.hpp"
 
+typedef boost::shared_ptr<zmq::context_t> zmq_context_ptr_t;
+typedef boost::shared_ptr<zmq::socket_t> zmq_socket_ptr_t;
+
 class Pinger
 {
 public:
-    Pinger(boost::asio::io_service& io_service, std::vector< std::string >& hosts, log4cxx::LoggerPtr logger);
+    Pinger(boost::asio::io_service& io_service,
+           std::vector< std::string >& hosts,
+           std::vector< std::string >& zeromq_binds,
+           log4cxx::LoggerPtr logger);
     ~Pinger();
     
 private:
     std::map< std::string, boost::shared_ptr<Host> > hosts_lookup;    
     icmp::socket socket;
     boost::asio::streambuf reply_buffer;
+
     log4cxx::LoggerPtr logger;
+
+    zmq_context_ptr_t context_ptr;
+    zmq_socket_ptr_t publisher_ptr;
 
     void start_receive();
 
@@ -46,6 +62,8 @@ private:
     void set_host_responsive(boost::shared_ptr<Host> host);
 
     void set_host_unresponsive(boost::shared_ptr<Host> host, const boost::system::error_code& error);
+
+    bool is_network_unreachable;
   
 }; // class Pinger
 
