@@ -16,6 +16,8 @@ TODO
 -  Register a SIP subscriber as a functional, periodic test.  PJSIP
    might work.
 -  Register two SIP subscribers, make a call.  PJSIP again.
+-  Offer HTTP GET monitoring, with customisable headers and
+   user agent string.
 -  Create CMake build, test it works on MSVC 2008 (9) and GCC on
    Ubuntu.
 -  Use ZeroMQ to allow more than one masspinger instance to cooperate

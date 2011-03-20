@@ -24,11 +24,11 @@ namespace po = boost::program_options;
 
 #include <stdlib.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/fileappender.h>
 #include <log4cxx/consoleappender.h>
-#include <log4cxx/simplelayout.h>
+#include <log4cxx/patternlayout.h>
 #include <log4cxx/logmanager.h>
-#include <iostream>
-#include <locale.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <istream>
 #include <iostream>
@@ -61,7 +61,8 @@ static void configure_logger(bool err) {
     if (err) {
         appender->setTarget(LOG4CXX_STR("System.err"));
     }
-    log4cxx::LayoutPtr layout(new log4cxx::SimpleLayout());
+    log4cxx::LogString default_conversion_pattern(LOG4CXX_STR("%d [%-5p] %c - %m%n"));
+    log4cxx::PatternLayoutPtr layout(new log4cxx::PatternLayout(default_conversion_pattern));
     appender->setLayout(layout);
     log4cxx::helpers::Pool pool;
     appender->activateOptions(pool);
@@ -94,15 +95,15 @@ int main(int argc, char* argv[])
 {
     configure_logger(false);
     log4cxx::LoggerPtr logger = log4cxx::Logger::getRootLogger();
-
-    std::vector<std::string> hosts;
+    
     try
     {
         po::options_description desc("Allowed options");
         desc.add_options()
-            ("help", "produce help message")
-            ("host,H", po::value< std::vector<std::string> >(), "host")
-            ("verbose,V", "verbose debug output");  
+            ("help", "Produce help message.")
+            ("host,H", po::value< std::vector<std::string> >(), "An IP address or DNS hostname to monitor using ICMP pings.")
+            ("zeromq_bind,b", po::value< std::vector<std::string> >(), "One or more ip_address:port pairs to publish ZeroMQ messages from, e.g. 'tcp://127.0.0.1:5556'.")
+            ("verbose,V", "Verbose debug output.");  
 
         po::positional_options_description positional_desc;
         positional_desc.add("host", -1);
@@ -125,16 +126,38 @@ int main(int argc, char* argv[])
             logger->setLevel(log4cxx::Level::getTrace());
         }
 
-        if (!vm.count("host")) {
-            std::cout << "Need to specify at least one host." << std::endl;
+        std::vector<std::string> hosts;
+        if (!vm.count("host"))
+        {
+            std::cout << "Need to specify at least one host to monitor." << std::endl;
             std::cout << desc;
             return 1;      
-        } else {
+        }
+        else
+        {
             hosts = vm["host"].as< std::vector<std::string> >();
             std::cout << "Hosts are: ";
-            BOOST_FOREACH( std::string host, hosts)
+            BOOST_FOREACH( std::string& host, hosts)
             {
                 std::cout << host << " ";
+            }
+            std::cout << std::endl;    
+        }
+
+        std::vector<std::string> zeromq_binds;
+        if (!vm.count("zeromq_bind"))
+        {
+            std::cout << "Need to specify at least one ZeroMQ binding." << std::endl;
+            std::cout << desc;
+            return 1;
+        }
+        else
+        {
+            zeromq_binds = vm["zeromq_bind"].as< std::vector<std::string> >();
+            std::cout << "ZeroMQ bindings are: ";
+            BOOST_FOREACH( std::string& zeromq_bind, zeromq_binds)
+            {
+                std::cout << zeromq_bind << " ";
             }
             std::cout << std::endl;    
         }
@@ -163,7 +186,7 @@ int main(int argc, char* argv[])
         // ---------------------------------------------------------------------------
 
         boost::asio::io_service io_service;
-        boost::shared_ptr<Pinger> ping_receiver(new Pinger(io_service, hosts, logger));
+        boost::shared_ptr<Pinger> ping_receiver(new Pinger(io_service, hosts, zeromq_binds, logger));
         io_service.run();
     }
     catch (boost::exception& e)
