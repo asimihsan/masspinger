@@ -113,7 +113,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-DDLL_EXPORT -DFD_SETSIZE=1024"
-				Optimization="2"
+				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

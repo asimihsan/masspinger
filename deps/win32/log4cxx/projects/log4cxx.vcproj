@@ -115,6 +115,7 @@
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -140,8 +141,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHsc "
-				Optimization="2"
-				InlineFunctionExpansion="1"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="true"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\src\main\include,..\..\apr\include,..\..\apr-util\include"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;DLL_EXPORTS;LOG4CXX;APR_DECLARE_STATIC;APU_DECLARE_STATIC;WIN32"
 				StringPooling="true"
@@ -172,6 +178,8 @@
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile="..\..\..\..\bin\win32\release\log4cxx.pdb"
 				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\..\bin\win32\release\log4cxx.lib"
