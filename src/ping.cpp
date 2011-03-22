@@ -94,8 +94,7 @@ static void configure_logger(bool err) {
 int main(int argc, char* argv[])
 {
     configure_logger(false);
-    log4cxx::LoggerPtr logger = log4cxx::Logger::getRootLogger();
-    
+    log4cxx::LoggerPtr logger = log4cxx::Logger::getRootLogger();    
     try
     {
         po::options_description desc("Allowed options");
@@ -116,7 +115,7 @@ int main(int argc, char* argv[])
         if (vm.count("help")) {
             std::cout << "Usage: ping [host1] [host2] ..." << std::endl;
             std::cout << desc;
-            return 0;
+            exit(0);
         }
 
         logger->setLevel(log4cxx::Level::getInfo());
@@ -131,7 +130,7 @@ int main(int argc, char* argv[])
         {
             std::cout << "Need to specify at least one host to monitor." << std::endl;
             std::cout << desc;
-            return 1;      
+            exit(1);      
         }
         else
         {
@@ -149,7 +148,7 @@ int main(int argc, char* argv[])
         {
             std::cout << "Need to specify at least one ZeroMQ binding." << std::endl;
             std::cout << desc;
-            return 1;
+            exit(2);
         }
         else
         {

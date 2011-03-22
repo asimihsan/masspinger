@@ -20,6 +20,7 @@
 			OutputDirectory="../../bin/win32/debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -39,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="i:\libs\boost_1_45_0\;..\..\deps\zeromq\include;&quot;I:\libs\apache-log4cxx-0.10.0\src\main\include&quot;"
+				AdditionalIncludeDirectories="i:\libs\boost_1_45_0;..\..\deps\win32\zeromq\include;..\..\deps\win32\log4cxx\src\main\include"
 				PreprocessorDefinitions="_WIN32_WINNT=0x0501;BOOST_WINDOWS;LOG4CXX_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,9 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="log4cxx.lib aprutil-1.lib apr-1.lib xml.lib libzmq.lib"
+				AdditionalDependencies="log4cxx.lib libzmq.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="I:\libs\boost_1_45_0\lib\win32;&quot;I:\libs\apache-log4cxx-0.10.0\projects\Debug&quot;;&quot;I:\libs\apr-util\LibD&quot;;I:\libs\apr\LibD;&quot;I:\libs\apr-util\xml\expat\lib\LibD&quot;;..\..\bin\win32\debug"
+				AdditionalLibraryDirectories="i:\libs\boost_1_45_0\lib\win32;..\..\bin\win32\debug"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -116,10 +117,10 @@
 				Optimization="3"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
+				FavorSizeOrSpeed="0"
 				OmitFramePointers="true"
-				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="i:\libs\boost_1_45_0\;..\..\deps\zeromq\include;&quot;I:\libs\apache-log4cxx-0.10.0\src\main\include&quot;"
+				EnableFiberSafeOptimizations="false"
+				AdditionalIncludeDirectories="i:\libs\boost_1_45_0;..\..\deps\win32\zeromq\include;..\..\deps\win32\log4cxx\src\main\include"
 				PreprocessorDefinitions="_WIN32_WINNT=0x0501;BOOST_WINDOWS;LOG4CXX_STATIC"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -138,9 +139,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="log4cxx.lib aprutil-1.lib apr-1.lib xml.lib libzmq.lib ws2_32.lib"
+				AdditionalDependencies="log4cxx.lib libzmq.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;I:\libs\apache-log4cxx-0.10.0\projects\Release&quot;;I:\libs\boost_1_45_0\lib\win32;I:\libs\apr\LibR;&quot;I:\libs\apr-util\LibR&quot;;&quot;I:\libs\apr-util\xml\expat\lib\LibD&quot;;..\..\bin\win32\release"
+				AdditionalLibraryDirectories="i:\libs\boost_1_45_0\lib\win32;..\..\bin\win32\release"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
