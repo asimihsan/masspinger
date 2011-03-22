@@ -121,7 +121,17 @@ void Pinger::handle_receive(std::size_t length)
          // http://stackoverflow.com/questions/1374468/c-stringstream-string-and-char-conversion-confusion
          // ------------------------------------------------------------------
          std::stringstream event_stream;
-         event_stream << "ICMP PING " << ipv4_hdr.source_address();
+         if (matching_host->get_is_hostname_available())
+         {
+             // IP address and hostname.
+             event_stream << "ICMP PING " << matching_host->get_hostname() << " (" << ipv4_hdr.source_address() << ")";
+         }
+         else
+         {
+             // only IP address.
+             event_stream << "ICMP PING " << ipv4_hdr.source_address();
+         } // if (matching_host->is_hostname_available)s
+         
          const std::string& event_string = event_stream.str();
          const char* event_cstr = event_string.c_str();
          zmq::message_t message(strlen(event_cstr));

@@ -21,6 +21,8 @@ public:
     Host(boost::asio::io_service& io_service, std::string& host, log4cxx::LoggerPtr logger);
 
     inline const std::string& get_host_ip_address() { return Host::host_ip_address; }
+    inline const std::string& get_hostname() { return Host::hostname; }
+    inline bool get_is_hostname_available() { return Host::is_hostname_available; }
 
     inline unsigned short get_sequence_number() { return Host::sequence_number; }
     inline void increment_sequence_number() { Host::sequence_number++; }
@@ -37,14 +39,17 @@ public:
     void set_unresponsive(const boost::system::error_code& error);
 
 private:
-    log4cxx::LoggerPtr logger;
-    std::string host_ip_address;
+    log4cxx::LoggerPtr logger;    
     shared_ptr_deadline_timer send_timer;  
     shared_ptr_deadline_timer unresponsive_timer;    
     unsigned short sequence_number;
     boost::posix_time::ptime time_sent;        
     icmp::endpoint destination;
     bool is_responsive;
+
+    std::string host_ip_address;
+    std::string hostname;
+    bool is_hostname_available;
 }; // class Host
 
 #endif // HOST_HPP
