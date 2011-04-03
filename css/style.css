@@ -362,6 +362,10 @@ address, blockquote, caption, cite, code, dl, figcaption, h1, h2, h3, h4, h5, h6
     margin-top: 0;
     text-rendering: optimizelegibility;
 }
+figcaption {
+    font-size: 0.8em;
+    font-style: italic;
+}
 dd, dt, li {
     display: block;
     margin-bottom: 0;
@@ -929,10 +933,10 @@ h3#comments {
     margin-right: auto;
     margin-top: 0;
     padding-bottom: 3em;
-    padding-left: 0;
+    padding-left: 2em;
     padding-right: 0;
     padding-top: 1em;
-    width: 58.875em;
+    /*width: 58.875em;*/
 }
 #screen > footer .HSC, #screen > header .HSC {
     height: 2em;
@@ -1202,8 +1206,13 @@ pre, .mono
     font-size: 75%;
 }
 
-pre.literal-block {
+pre
+{
     padding: 1em;
+}
+
+pre.literal-block {
+
     background-color: #333;
     border-bottom-color: #A0A0A0;
     border-bottom-style: solid;
