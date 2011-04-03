@@ -1203,6 +1203,7 @@ pre, .mono
 }
 
 pre.literal-block {
+    padding: 1em;
     background-color: #333;
     border-bottom-color: #A0A0A0;
     border-bottom-style: solid;
