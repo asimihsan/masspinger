@@ -71,7 +71,7 @@
             
             <h2><a name="introduction">Introduction</a></h2>            
                 <p>masspinger is a command-line tool that uses ICMP pings, and in the future HTTP GETs and SIP REGISTERs/calls, to continuously monitor network machines. It is intended for deployment by network administrators as part of a broader network monitoring system. It supports both Windows and Linux operating systems.</p>      
-                <p>The use of the <a href="http://www.zeromq.org/">ZeroMQ</a> socket library allows network administrators to efficiently and scalably use masspinger as a lower-level building block for constructs written in higher-level languages.  <a href="http://zguide.zeromq.org/page:all">Chapter 1 of ZeroMQ's excellent guide</a> should provide a sufficient background to develop clients that listen for ZeroMQ messages from masspinger.  Keep in mind that all the examples in the manual usually have equivalents in other languages.</p>            
+                <p>masspinger leverages asynchronous I/O, also known as non-blocking I/O, as opposed to using a threaded model, so that it may monitor very large numbers of hosts at a lesser cost<a href="#reference_1">[1]</a>.  Morever, rather than plough in lots of additional functionality in order to display/track gathered results it uses the <a href="http://www.zeromq.org/">ZeroMQ</a> socket library to communicate its results.  This will allow network administrators to efficiently and scalably use masspinger as a lower-level building block for constructs written in higher-level languages.  Please see the <a href="#developer">Developer's Guide</a> for more information.</p>            
             <h2><a name="installation">Installation and quick start guide</a></h2>
             <h3><a name="installation_windows">Windows</a></h3>
             <p>The following have been tested on Windows XP SP2 and Windows 7, but should also other compatible versions of Windows.  In order to use masspinger you need Administrator access on the machine it runs on.</p>
@@ -158,13 +158,48 @@ sudo apt-get install zeromq-bin libzmq-dbg libzmq-dev libzmq0</pre>
             <ul>
                 <li>Q: masspinger isn't doing anything!<br />
                 A: Turn on verbose trace using the <span class="mono">--verbose</span> command-line argument to confirm that the tool is attempting to do something.  Then use <a href="http://www.wireshark.org/">Wireshark</a> or tcpdump to confirm whether e.g. ICMP pings are leaving your box and whether any responses are coming back.  Keep in mind that <a href="http://wiki.wireshark.org/CaptureSetup/Loopback">you cannot sniff on the loopback interface on Windows</a>, so absence on traffic in this scenario doesn't imply a lack of traffic.
-                </li>                        
+                </li>                                    
             
             <h2><a name="developer">Developer's guide</a></h2>
-            
-
+            <p>The purpose of masspinger is to monitor the responsiveness of a large number of networked hosts using a wide variety of protocols.  Currently it only supports ICMP ECHO_REQUESTs but I intend to support HTTP GETs/POSTs and SIP REGISTERs in the future.  masspinger is written in C++ and make heavy use of <a href="http://www.boost.org/">Boost</a>, <a href="http://www.zeromq.org/">ZeroMQ</a>, and <a href="http://logging.apache.org/log4cxx/index.html">log4cxx</a>.</p>
+            <p>masspinger's main function is mostly a lot of boilerplate that handles the command-line arguments.  At its heart is this section at the bottom:
+<pre class="prettyprint">// src/ping.cpp<br />
+boost::asio::io_service io_service;
+boost::shared_ptr<Pinger> ping_receiver(new Pinger(io_service, hosts, zeromq_binds, logger));
+io_service.run();
+</pre></p>                  
+            <p>The <span class="mono">Pinger</span> instance is a single object given <span class="mono">hosts</span>, a vector of strings corresponding to hostnames and/or IPv4 addresses to monitor, and <span class="mono">zeromq_binds</span>, a vector of strings of addresses that ZeroMQ can bind to in order to publish results.  In order to add future functionality, e.g. <span class="mono">HttpMonitor</span> or <span class="mono">SipMonitor</span>, a new class with a similar constructor prototype would be needed and would use the same <span class="mono">io_service</span> instance.  The intention is for all monitoring types to not require additional threads to operate.  For an accessible tutorial to Boost ASIO please see <a href="#reference_2">[2]</a>.</p>
+            <p>Before I move onto the details of the <span class="mono">Pinger</span> class, a quick word about ZeroMQ.  It is extremely easy to use; <a href="http://zguide.zeromq.org/page:all">Chapter 1 of ZeroMQ's excellent guide</a> should provide a sufficient background to develop clients that listen for ZeroMQ messages from masspinger.  Keep in mind that all the examples in the manual usually have equivalents in other languages. As a quick and dirty example of a Python client take a look at <span class="mono">tools/python_client.py</span>.</p>
+            <p>The <span class="mono">Pinger</span> class is rather unusual as a consequence of how ICMP sockets work, or rather that lack thereof.  It is impossible to receive ICMP ECHO_REPLYs from a given host.  Instead one must bind to a raw socket and receive all ICMP ECHO_REPLYs incoming to the host.  Hence, the flow of Pinger's constructor is to:
+            <ul>
+                <li>For each requested ZeroMQ binding, call <span class="mono">zmq_bind()</span> with the <span class="mono">ZMQ_PUB</span> socket option.</li>
+                <li>For each host we're monitoring, get the IP address it uses and call <span class="mono">start_send()</span> with a <span class="mono">Host</span> instance wrapping around its details.  <span class="mono">start_send()</span> uses a timer to send an ICMP ECHO_REQUEST once a second to the host.</li>
+                <li>Call <span class="mono">start_receive()</span> <strong>once</strong>.  This is a non-blocking receive that uses <span class="mono">handle_receive()</span> as the callback for all received ICMP packets.</li>
+            </ul></p>
+            <p>Here's a diagram showing two instances of masspinger, each monitoring a host:
+            <img src="img/basic_1.png" width=761 height=282 alt="Basic ICMP and ZeroMQ message timeline." />
+                    <figcaption>Basic ICMP and ZeroMQ message timeline.</figcaption>            
+            </p>
             
             <h2><a name="future">Future development</a></h2>            
+            <p>
+            <ul>
+                <li>Handle all potential exceptions.  For example, entering in an unresolvable hostname causes a crash.</li>
+                <li>Hostnames that resolve to more than one IP address crash the script.  Ideally we monitor the first IP address and periodically re-resolve the hostname.</li>
+                <li>Add SIP REGISTER, HTTP GET, HTTP POST monitoring.</li>
+                <li>Offer file-based configuration.  Doesn't seem feasible to pass absolutely everything via the command-line.</li>
+                <li>Offer file-based log4cxx configuration.  Admins may have unusual logging requirements, or platform-specific requirements (e.g. using the Windows Event logger).</li>
+                <li>Create a fancier front-end example, perhaps web based and offering historical tracking.</li>
+                <li>Use a more efficient protocol.  Encoding YAML messages over ZeroMQ sounds perfect but the yaml-cpp requires an unusually large amount of CPU power to encode message.  Maybe Google Protocol Buffers instead?</li>
+                <li>Rather than have masspinger publish all ICMP results over ZeroMQ it makes more sense to publishes periodic summaries of host responsiveness, in order to reduce traffic.  However, it must guarantee immediate notification of hosts becoming unresponsive.</li>
+            </ul>
+            </p>
+            
+            <h2><a name="references">References</a></h2>
+            <ol>
+                <li><a id="reference_1" href="https://secure.wikimedia.org/wikipedia/en/wiki/Asynchronous_I/O">Asynchronous I/O</a>, Wikipedia.</li>
+                <li><a id="reference_2" name="reference_2"></a><a href="http://en.highscore.de/cpp/boost/">The Boost C++ Libraries</a>, Boris Schäling.</li>
+            </ol>
             
             
             <h2><a name="developer">Software and document changelog</a></h2>
