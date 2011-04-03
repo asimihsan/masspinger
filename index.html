@@ -132,6 +132,7 @@ Allowed options:
             <pre class="literal-block">git clone git://github.com/asimihsan/masspinger.git</pre></li>
             <li>Open <span class="mono">deps/win32/log4cxx/projects/log4cxx.sln</span> in Microsoft Visual Studio. Change the active solution current configuration to "Release" and build the whole solution.  This will result in a dynamic DLL called <span class="mono">"log4cxx.dll"</span> and other files required for building inside <span class="mono">bin/win32/release/</span>.</li>
             <li>Open <span class="mono">deps/win32/zeromq/builds/msvc/msvc.sln</span> in Microsoft Visual Studio. Change the active solution configuration to "Release" and build the whole solution.  This will result in a dynamic DLL called <span class="mono">"libzmq.dll"</span> and other files required for building inside <span class="mono">bin/win32/release/</span>.</li>
+            <li>Open <span class="mono">deps/win32/yaml-cpp/yamlcpp.sln</span> in Microsoft Visual Studio. Change the active solution current configuration to "Release" and build the whole solution.  This will result in a static library called <span class="mono">"yamlcpp.lib"</span> inside <span class="mono">bin/win32/release/</span>.</li>            
             <li>Open <span class="mono">build/msvc/masspinger.sln</span> in Microsoft Visual Studio.  Change the active solution configuration to "Release" and build the whole solution.  This will result in an EXE called <span class="mono">masspinger.exe</span> inside <span class="mono">bin/win32/release/</span>.</li>
             </ul>
 
@@ -145,10 +146,11 @@ Allowed options:
 <pre class="literal-block">sudo add-apt-repository ppa:chris-lea/zeromq
 sudo apt-get update
 sudo apt-get install zeromq-bin libzmq-dbg libzmq-dev libzmq0</pre>
+                <li>Download and install <a href="https://code.google.com/p/yaml-cpp/">yaml-cpp</a>, move the resulting static libary to /usr/local/lib/, and then execute ldconfig</li>.
                 <li>Git clone a copy of the repository:<br /><br />
                 <pre class="literal-block">git clone git://github.com/asimihsan/masspinger.git</pre></li>
                 <li>Change directory to the src directory, then run:<br /><br />
-                <pre class="literal-block">g++ -O3 -I /usr/local/lib/boost_1_46_0/ -lboost_system -lboost_program_options -llog4cxx -lzmq -Wall -ansi -pedantic `ls *.cpp | xargs` -o masspinger</pre>
+                <pre class="literal-block">g++ -O3 -I /usr/local/lib/boost_1_46_0/ -lboost_system -lboost_program_options -llog4cxx -lzmq -lyaml-cpp -Wall -ansi -pedantic `ls *.cpp | xargs` -o masspinger</pre>
                 </li>
             </ul></p>
 
