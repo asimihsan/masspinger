@@ -8,7 +8,7 @@
 *.exe
 *.htm
 *.html
-
+*.user
 
 apr/LibR
 apr/LibD
@@ -37,3 +37,7 @@ zeromq/builds/msvc/zmq_queue/Release
 zeromq/builds/msvc/zmq_streamer/Debug
 zeromq/builds/msvc/zmq_streamer/Release
 zeromq/doc
+
+yaml-cpp/lib
+yaml-cpp/Debug
+yaml-cpp/Release

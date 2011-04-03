@@ -21,6 +21,7 @@ namespace posix_time = boost::posix_time;
 #if BOOST_WINDOWS
     #define snprintf sprintf_s 
 #endif 
+#include <yaml.h>
 
 #include <string>
 #include <set>

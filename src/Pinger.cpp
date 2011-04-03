@@ -117,23 +117,25 @@ void Pinger::handle_receive(std::size_t length)
          // ------------------------------------------------------------------
          // Publish a ZeroMQ message corresponding to receiving this event.
          //
+		 // TODO.  Need a protocol spec.  Points to consider:
+		 // -  Should nested data structures be used? Any advantage?
+		 // -  Should more than one event per message be supported?  
          // Reference:
          // http://stackoverflow.com/questions/1374468/c-stringstream-string-and-char-conversion-confusion
          // ------------------------------------------------------------------
-         std::stringstream event_stream;
-         if (matching_host->get_is_hostname_available())
-         {
-             // IP address and hostname.
-             event_stream << "ICMP PING " << matching_host->get_hostname() << " (" << ipv4_hdr.source_address() << ")";
-         }
-         else
-         {
-             // only IP address.
-             event_stream << "ICMP PING " << ipv4_hdr.source_address();
-         } // if (matching_host->is_hostname_available)s
-         
-         const std::string& event_string = event_stream.str();
-         const char* event_cstr = event_string.c_str();
+		 YAML::Emitter yaml_out;
+		 yaml_out << YAML::BeginMap;
+		 yaml_out << YAML::Key << "source" << YAML::Value << "masspinger";
+		 yaml_out << YAML::Key << "version" << YAML::Value << "100";
+		 yaml_out << YAML::Key << "test" << YAML::Value << "icmp ping";
+		 yaml_out << YAML::Key << "event" << YAML::Value << "raw";		 
+		 if (matching_host->get_is_hostname_available())
+		 {
+			 yaml_out << YAML::Key << "remote_hostname" << YAML::Value << matching_host->get_hostname();
+		 }	     
+		 yaml_out << YAML::Key << "remote_ip" << YAML::Value << ipv4_hdr.source_address().to_string();
+		 yaml_out << YAML::EndMap;
+         const char* event_cstr = yaml_out.c_str();
          zmq::message_t message(strlen(event_cstr));
          strncpy((char *)message.data(), event_cstr, strlen(event_cstr));
          publisher_ptr->send(message);         
