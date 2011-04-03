@@ -461,7 +461,7 @@ hr {
     margin-top: 1.45em;
 }
 pre, code, kbd, samp, .mono {
-    font-family: monospace,sans-serif;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
 }
 button, input, label, select, textarea {
     display: block;
@@ -956,8 +956,8 @@ h3#comments {
     background-image: none;
     background-position: 0 100%;
     background-repeat: repeat-x;
-    margin-bottom: 1.5em;
-    padding-bottom: 1.5em;
+    /* margin-bottom: 1.5em; */
+    /* padding-bottom: 1.5em; */
 }
 #screen > header form {
     display: none;
@@ -1200,6 +1200,37 @@ fieldset:after, fieldset ol li:after, #screen:after, .containsAddress:after, .co
 pre, .mono
 {
     font-size: 75%;
+}
+
+pre.literal-block {
+    background-color: #333;
+    border-bottom-color: #A0A0A0;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color-ltr-source: physical;
+    border-left-color-rtl-source: physical;
+    border-left-color-value: #A0A0A0;
+    border-left-style-ltr-source: physical;
+    border-left-style-rtl-source: physical;
+    border-left-style-value: solid;
+    border-left-width-ltr-source: physical;
+    border-left-width-rtl-source: physical;
+    border-left-width-value: 1px;
+    border-right-color-ltr-source: physical;
+    border-right-color-rtl-source: physical;
+    border-right-color-value: #A0A0A0;
+    border-right-style-ltr-source: physical;
+    border-right-style-rtl-source: physical;
+    border-right-style-value: solid;
+    border-right-width-ltr-source: physical;
+    border-right-width-rtl-source: physical;
+    border-right-width-value: 1px;
+    border-top-color: #A0A0A0;
+    border-top-style: solid;
+    border-top-width: 1px;
+    color: white;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
 /**
