@@ -156,7 +156,7 @@ body, select, input, textarea {
 }
 
 /* Headers (h1, h2, etc) have no default font-size or margin; define those yourself */
-h1, h2, h3, h4, h5, h6 { font-weight: bold; font-family: 'Oswald', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Oswald', sans-serif; }
 
 a, a:active, a:visited { color: #607890; }
 a:hover { color: #036; }
@@ -498,7 +498,7 @@ span.says {
     float: right;
 }
 .G1 {
-    width: 8.875em;
+    max-width: 8.875em;
 }
 .G1 .G1 {
     margin-left: 0;
@@ -519,7 +519,7 @@ span.says {
     margin-left: -50em;
 }
 .G2 {
-    width: 18.875em;
+    max-width: 18.875em;
 }
 .G2 .G2 {
     margin-left: 0;
@@ -537,7 +537,7 @@ span.says {
     margin-left: -40em;
 }
 .G3 {
-    width: 28.875em;
+    max-width: 28.875em;
 }
 .G3 .G3 {
     margin-left: 0;
@@ -552,7 +552,7 @@ span.says {
     margin-left: -30em;
 }
 .G4 {
-    width: 38.875em;
+    max-width: 38.875em;
 }
 .G4 .G4 {
     margin-left: 0;
@@ -567,13 +567,13 @@ span.says {
     margin-left: 0;
 }
 .G5 {
-    width: 48.875em;
+    max-width: 48.875em;
 }
 .G5 .G6 {
     margin-left: -10em;
 }
 .G6 {
-    width: 58.875em;
+    max-width: 58.875em;
 }
 .G6 .G6 {
     margin-left: 0;
@@ -769,8 +769,7 @@ h3#comments {
     display: none;
 }
 #screen > header h1 {
-    padding-bottom: 0.25em;
-    padding-top: 1.75em;
+    padding-bottom: 0.25em;    
 }
 #screen > header h1 img {
     height: 3.4375em;
@@ -798,6 +797,9 @@ h3#comments {
 }
 #screen > footer {
     clear: both;
+    font-family: 'Lato', Arial, serif;
+    font-weight: 300;
+    font-size: 0.8em;
 }
 #screen > footer > nav > ul {
     -moz-background-clip: border;
@@ -1043,6 +1045,195 @@ pre.literal-block {
     color: white;
     overflow-x: auto;
     overflow-y: auto;
+}
+
+#event_list
+{
+    border-top-color: #FFFFFF;
+    border-top-style: solid;
+    border-top-width: 1px;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-top: 0;
+    position: relative;
+    z-index: 1000;
+}
+
+#event_list li
+{
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;    
+}
+
+#event_list .event
+{
+    border-top-color: #E9E9E9;
+    border-top-style: solid;
+    border-top-width: 1px;
+    clear: both;
+    color: #787878;
+    margin-bottom: 0;
+    margin-left: 5.2em;
+    margin-right: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    position: relative;
+    z-index: 100;
+}
+
+#event_list .event .date
+{
+    border-top-color: #E9E9E9;
+    border-top-style: solid;
+    border-top-width: 1px;
+    color: #999999;
+    font-weight: normal;
+    left: -5.2em;
+    padding-top: 0.5em;
+    position: absolute;
+    text-align: left;
+    top: -1px;
+    width: 5em;
+    font-family: 'Lato', arial, serif;
+}
+
+#event_list .event .data
+{
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
+
+#event_list .event .data h4
+{
+    color: #000000;    
+    font-weight: bold;
+    padding-top: 0.5em;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 4em;
+    margin-top: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    font-family: 'Lato', arial, serif;        
+}
+
+#event_list .event .data .description
+{
+    clear: left;
+    color: #333333;
+    height: auto;    
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding-bottom: 0.2em;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0.25em;
+    width: 100%;    
+    font-family: 'Lato', Arial, serif;
+    font-size: 0.95em;
+}
+
+#event_list .image
+{
+    float: right;
+    padding-top: 0.5em;
+    margin-bottom: -2.0em;
+}
+
+#event_list .librarything .image
+{
+    margin-bottom: 0em;
+
+}
+
+.blurb
+{
+    font-size: 0.8em;
+    display: inline;
+    font-family: 'Lato', Arial, serif;
+    font-weight: 300;
+    font-size: 0.8em;    
+}
+
+.blurb img
+{
+    clear: both;
+    float: left;    
+    margin-bottom: -10px;
+    margin-right: 10px;
+}
+
+.blurb ul, .blurb li
+{
+    margin: 0;
+    list-style:none;
+    list-style-image: none;    
+}
+
+.blurb li
+{
+    margin-bottom: 20px;
+}
+
+.blurb li:last-child
+{
+    padding-bottom: 20px;
+}
+
+/*
+Reference:
+http://www.cowboycoded.com/2011/04/08/customizing-your-embedded-gists-with-css/
+*/
+.gist{
+  margin: 15px 0 !important;
+}
+
+.gist-file{
+  border: none !important;
+}
+
+.gist-meta{
+  border: 1px solid #D2d2d2 !important;
+  padding: 12px !important;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+
+}
+
+.gist-data{
+  padding: 15px !important;
+  border: 1px solid #D2d2d2 !important;
+  border-bottom: none !important;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+}
+
+#screen > header #namebar
+{
+    background-color: #000000;      
+    margin-top: -1em;
+    margin-left: -4em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1.0em;
+}
+
+#screen > header #namebar a
+{
+    font-family: 'Oswald', sans-serif;
+    color: #FFFFFF;  
+    margin-left: 2em;    
+    font-size: 180%;
 }
 
 /**
